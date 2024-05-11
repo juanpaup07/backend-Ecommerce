@@ -15,6 +15,11 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ mensaje: 'Credenciales inválidas' });
     }
 
+    // Verificar si el usuario está activo
+    if (!usuario.activo) {
+      return res.status(400).json({ mensaje: 'El usuario está desactivado' });
+    }
+
     // Verificar la contraseña
     const contraseñaValida = await bcrypt.compare(contraseña, usuario.contraseña);
     if (!contraseñaValida) {
@@ -31,5 +36,6 @@ router.post('/', async (req, res) => {
     res.status(500).json({ mensaje: 'Hubo un error al iniciar sesión' });
   }
 });
+
 
 module.exports = router;
