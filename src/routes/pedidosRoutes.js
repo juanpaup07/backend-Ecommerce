@@ -12,7 +12,6 @@ router.put('/completar/:pedidoId', autenticarUsuario, pedidosController.completa
 router.put('/cancelar/:pedidoId', autenticarUsuario, pedidosController.cancelarPedido);
 router.delete('/:id', autenticarUsuario, pedidosController.eliminarPedido);
 router.get('/usuario/:idUsuario', autenticarUsuario, pedidosController.obtenerPedidosPorUsuario);
-//router.get('/', autenticarUsuario, pedidosController.obtenerPedidosUsuario);
 
 module.exports = router;
 

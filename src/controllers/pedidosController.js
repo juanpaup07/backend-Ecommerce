@@ -86,27 +86,6 @@ exports.obtenerPedidosPorUsuario = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-// Obtener pedidos de un usuario por su ID
-// exports.obtenerPedidosPorUsuario = async (req, res) => {
-//   try {
-//     const idUsuario = req.params.idUsuario;
-//     const pedidos = await Pedido.find({ comprador: idUsuario, activo: true }); // Agregar filtro para los pedidos activos
-//     res.status(200).json(pedidos);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ mensaje: 'Hubo un error al obtener los pedidos del usuario' });
-//   }
-// };
-
-
-
-
 // Función para completar un pedido (solo el vendedor puede hacerlo)
 exports.completarPedido = async (req, res) => {
   try {
