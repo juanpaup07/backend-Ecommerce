@@ -195,16 +195,22 @@ exports.eliminarPedido = async (req, res) => {
       return res.status(403).json({ mensaje: 'No tienes permiso para eliminar este pedido' });
     }
 
+    // Verificar si el pedido ya está desactivado
+    if (!pedido.activo) {
+      return res.status(400).json({ mensaje: 'Pedido no encontrado' });
+    }
+
     // Desactivar el pedido cambiando el valor de "activo" a false
     pedido.activo = false;
     await pedido.save();
 
-    res.status(200).json({ mensaje: 'Pedido desactivado exitosamente' });
+    res.status(200).json({ mensaje: 'Pedido eliminado exitosamente' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: 'Hubo un error al desactivar el pedido' });
+    res.status(500).json({ mensaje: 'Hubo un error al eliminar el pedido' });
   }
 };
+
 
 
 
