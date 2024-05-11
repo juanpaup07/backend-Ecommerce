@@ -53,22 +53,6 @@ exports.crearPedido = async (req, res) => {
 
 
 
-
-
-
-// Obtener todos los pedidos asociados al usuario autenticado
-// exports.obtenerPedidos = async (req, res) => {
-//   try {
-//     const usuarioId = req.usuario._id;
-//     const pedidos = await Pedido.find({ $or: [{ comprador: usuarioId }, { vendedor: usuarioId }] });
-//     res.status(200).json(pedidos);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ mensaje: 'Hubo un error al obtener los pedidos' });
-//   }
-// };
-
-
 // Obtener todos los pedidos asociados a un usuario
 exports.obtenerPedidosUsuario = async (req, res) => {
   try {

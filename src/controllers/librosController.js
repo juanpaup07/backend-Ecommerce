@@ -113,10 +113,14 @@ exports.eliminarLibro = async (req, res) => {
   try {
     const { id } = req.params;
     const usuarioId = req.usuario._id;
-    // Verificar si el usuario autenticado es el vendedor del libro
+    // Verificar si el libro existe y si el usuario autenticado es el vendedor del libro
     const libro = await Libro.findOne({ _id: id, vendedor: usuarioId });
     if (!libro) {
       return res.status(403).json({ mensaje: 'El libro no existe o no tienes permiso para eliminar este libro' });
+    }
+    // Verificar si el libro ya está desactivado
+    if (!libro.activo) {
+      return res.status(400).json({ mensaje: 'El libro no existe o no tienes permiso para eliminar este libro' });
     }
     // Desactivar el libro estableciendo el atributo 'activo' en falso
     const libroDesactivado = await Libro.findByIdAndUpdate(id, { activo: false }, { new: true });
