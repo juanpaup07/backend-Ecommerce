@@ -34,10 +34,18 @@ exports.crearUsuario = async (req, res) => {
 // Obtener un usuario por su ID
 exports.obtenerUsuarioPorId = async (req, res) => {
   try {
-    const usuario = await Usuario.findOne({ _id: req.params.id, activo: true });
+    const usuarioId = req.usuario._id.toString(); // Convertir el ID del usuario autenticado a cadena
+    const { id } = req.params; // ID del usuario a consultar
+    // Verificar si el usuario autenticado está intentando ver su propio perfil
+    if (usuarioId !== id) {
+      return res.status(403).json({ mensaje: 'No tienes permiso para ver el perfil de otro usuario' });
+    }
+    // Consultar el usuario por su ID
+    const usuario = await Usuario.findOne({ _id: id, activo: true });
     if (!usuario) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
+    // Enviar el usuario como respuesta
     res.status(200).json(usuario);
   } catch (error) {
     console.error(error);
