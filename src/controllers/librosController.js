@@ -89,6 +89,12 @@ exports.obtenerLibroPorId = async (req, res) => {
 // Actualizar un libro
 exports.actualizarLibro = async (req, res) => {
   try {
+    // Verificar si el usuario logueado es el propietario del libro
+    const libro = await Libro.findOne({ _id: req.params.id, vendedor: req.usuario._id, activo: true });
+    if (!libro) {
+      return res.status(404).json({ mensaje: 'Libro no encontrado o no tienes permisos para actualizarlo' });
+    }
+    // Actualizar el libro
     const libroActualizado = await Libro.findOneAndUpdate({ _id: req.params.id, activo: true }, req.body, { new: true });
     if (!libroActualizado) {
       return res.status(404).json({ mensaje: 'Libro no encontrado' });
@@ -99,6 +105,7 @@ exports.actualizarLibro = async (req, res) => {
     res.status(500).json({ mensaje: 'Hubo un error al actualizar el libro' });
   }
 };
+
 
 
 // Eliminar un libro
