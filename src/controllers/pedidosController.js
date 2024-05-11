@@ -22,7 +22,7 @@ exports.crearPedido = async (req, res) => {
       if (!libro) {
         return res.status(400).json({ mensaje: 'Uno de los libros no existe' });
       }
-      if (libro.vendedor !== vendedorId) {
+      if (libro.vendedor.toString() !== vendedorId.toString()) {
         return res.status(400).json({ mensaje: 'Los libros deben pertenecer al mismo vendedor' });
       }
     }
@@ -50,6 +50,7 @@ exports.crearPedido = async (req, res) => {
     res.status(500).json({ mensaje: 'Hubo un error al crear el pedido' });
   }
 };
+
 
 
 
@@ -199,7 +200,7 @@ exports.eliminarPedido = async (req, res) => {
       return res.status(404).json({ mensaje: 'Pedido no encontrado' });
     }
 
-    if (pedido.comprador.toString() !== usuarioId && pedido.vendedor.toString() !== usuarioId) {
+    if (pedido.comprador.toString() !== usuarioId.toString() && pedido.vendedor.toString() !== usuarioId.toString()) {
       return res.status(403).json({ mensaje: 'No tienes permiso para eliminar este pedido' });
     }
 
@@ -213,4 +214,7 @@ exports.eliminarPedido = async (req, res) => {
     res.status(500).json({ mensaje: 'Hubo un error al desactivar el pedido' });
   }
 };
+
+
+
 

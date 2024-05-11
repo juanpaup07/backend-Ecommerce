@@ -7,7 +7,6 @@ const autenticarUsuario = require('../middleware/autenticacion');
 
 // Rutas para pedidos
 router.post('/', autenticarUsuario, pedidosController.crearPedido);
-//router.get('/', autenticarUsuario, pedidosController.obtenerPedidos);
 router.get('/:id', autenticarUsuario, pedidosController.obtenerPedidoPorId);
 router.put('/completar/:pedidoId', autenticarUsuario, pedidosController.completarPedido);
 router.put('/cancelar/:pedidoId', autenticarUsuario, pedidosController.cancelarPedido);
