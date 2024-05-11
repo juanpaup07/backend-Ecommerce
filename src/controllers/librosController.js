@@ -111,14 +111,23 @@ exports.actualizarLibro = async (req, res) => {
 // Eliminar un libro
 exports.eliminarLibro = async (req, res) => {
   try {
-    const libroDesactivado = await Libro.findByIdAndUpdate(req.params.id, { activo: false }, { new: true });
+    const { id } = req.params;
+    const usuarioId = req.usuario._id;
+    // Verificar si el usuario autenticado es el vendedor del libro
+    const libro = await Libro.findOne({ _id: id, vendedor: usuarioId });
+    if (!libro) {
+      return res.status(403).json({ mensaje: 'El libro no existe o no tienes permiso para eliminar este libro' });
+    }
+    // Desactivar el libro estableciendo el atributo 'activo' en falso
+    const libroDesactivado = await Libro.findByIdAndUpdate(id, { activo: false }, { new: true });
     if (!libroDesactivado) {
       return res.status(404).json({ mensaje: 'Libro no encontrado' });
     }
-    res.status(200).json({ mensaje: 'Libro desactivado exitosamente', libro: libroDesactivado });
+    res.status(200).json({ mensaje: 'Libro eliminado exitosamente', libro: libroDesactivado });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: 'Hubo un error al desactivar el libro' });
+    res.status(500).json({ mensaje: 'Hubo un error al eliminar el libro' });
   }
 };
+
 
