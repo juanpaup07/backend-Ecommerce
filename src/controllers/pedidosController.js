@@ -17,6 +17,15 @@ exports.crearPedido = async (req, res) => {
     if (!vendedorId) {
       return res.status(400).json({ mensaje: 'El libro no tiene un vendedor asociado' });
     }
+    for (const libroId of libros) {
+      const libro = await Libro.findById(libroId);
+      if (!libro) {
+        return res.status(400).json({ mensaje: 'Uno de los libros no existe' });
+      }
+      if (libro.vendedor !== vendedorId) {
+        return res.status(400).json({ mensaje: 'Los libros deben pertenecer al mismo vendedor' });
+      }
+    }
 
     // Calcular el total sumando los precios de los libros
     let total = 0;
@@ -41,6 +50,7 @@ exports.crearPedido = async (req, res) => {
     res.status(500).json({ mensaje: 'Hubo un error al crear el pedido' });
   }
 };
+
 
 
 
