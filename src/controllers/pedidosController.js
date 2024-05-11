@@ -176,10 +176,17 @@ exports.obtenerPedidoPorId = async (req, res) => {
     if (!pedido) {
       return res.status(404).json({ mensaje: 'Pedido no encontrado o no está activo' });
     }
+
     // Verificar si el usuario está asociado con el pedido
     if (pedido.comprador.toString() !== req.usuario._id.toString() && pedido.vendedor.toString() !== req.usuario._id.toString()) {
       return res.status(403).json({ mensaje: 'No tienes permiso para acceder a este pedido' });
     }
+
+    // Verificar si el ID proporcionado coincide exactamente con el ID del pedido
+    if (pedido._id.toString() !== req.params.id) {
+      return res.status(400).json({ mensaje: 'El ID del pedido proporcionado no coincide exactamente con el ID del pedido encontrado' });
+    }
+
     res.status(200).json(pedido);
   } catch (error) {
     console.error(error);
