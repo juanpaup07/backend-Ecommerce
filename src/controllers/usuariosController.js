@@ -49,21 +49,16 @@ exports.obtenerUsuarioPorId = async (req, res) => {
 // Actualizar un usuario
 exports.actualizarUsuario = async (req, res) => {
   try {
-    const { id } = req.params; // ID del usuario a actualizar
+    const { id } = req.params;
     const { nombre, email, contraseña } = req.body;
-
-    // Verificar si se está actualizando la contraseña
     if (contraseña) {
-      // Hashear la nueva contraseña
       const hashContraseña = await bcrypt.hash(contraseña, 10);
-      // Actualizar el usuario incluyendo la nueva contraseña hasheada
       const usuarioActualizado = await Usuario.findByIdAndUpdate(id, { nombre, email, contraseña: hashContraseña }, { new: true });
       if (!usuarioActualizado) {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });
       }
       res.status(200).json({ mensaje: 'Usuario actualizado exitosamente', usuario: usuarioActualizado });
     } else {
-      // Si no se está actualizando la contraseña, continuar con la actualización normal
       const usuarioActualizado = await Usuario.findByIdAndUpdate(id, { nombre, email }, { new: true });
       if (!usuarioActualizado) {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });
@@ -81,13 +76,16 @@ exports.actualizarUsuario = async (req, res) => {
 // Desactivar un usuario (en lugar de eliminarlo)
 exports.desactivarUsuario = async (req, res) => {
   try {
-    // Verificar si el usuario existe y está activo
+    // Verificar si el ID del usuario en la solicitud coincide con el ID del usuario autenticado
+    if (req.usuario._id.toString() !== req.params.id.toString()) {
+      return res.status(403).json({ mensaje: 'No tienes permiso para desactivar este usuario' });
+    }
+
     const usuarioExistente = await Usuario.findOne({ _id: req.params.id, activo: true });
     if (!usuarioExistente) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado o inactivo' });
     }
 
-    // Desactivar el usuario (actualizar su estado a inactivo)
     const usuarioDesactivado = await Usuario.findByIdAndUpdate(req.params.id, { activo: false }, { new: true });
     res.status(200).json({ mensaje: 'Usuario desactivado exitosamente', usuario: usuarioDesactivado });
   } catch (error) {
@@ -95,4 +93,5 @@ exports.desactivarUsuario = async (req, res) => {
     res.status(500).json({ mensaje: 'Hubo un error al desactivar el usuario' });
   }
 };
+
 
