@@ -54,13 +54,22 @@ exports.crearPedido = async (req, res) => {
 
 
 // Obtener todos los pedidos asociados a un usuario
-exports.obtenerPedidosUsuario = async (req, res) => {
+exports.obtenerPedidosPorUsuario = async (req, res) => {
   try {
-    const compradorId = req.usuario._id; // ID del usuario autenticado
+    const usuarioId = req.usuario._id.toString(); // Convertir el ID del usuario autenticado a cadena
     const { fechaInicio, fechaFin, estado } = req.query; // Obtener los parámetros de consulta
 
+    // Verificar si el usuario autenticado está viendo sus propios pedidos
+    if (usuarioId !== req.params.idUsuario) {
+      return res.status(403).json({ mensaje: 'No tienes permiso para ver los pedidos de otro usuario' });
+    }
+
     // Construir el filtro para la consulta
-    const filtro = { comprador: compradorId, activo: true }; // Agregar el filtro para los pedidos activos
+    const filtro = {
+      $or: [{ comprador: usuarioId }, { vendedor: usuarioId }],
+      activo: true
+    }; // Incluir pedidos donde el usuario es el comprador o el vendedor
+
     if (fechaInicio && fechaFin) {
       filtro.fechaCreacion = { $gte: new Date(fechaInicio), $lte: new Date(fechaFin) };
     }
@@ -81,17 +90,19 @@ exports.obtenerPedidosUsuario = async (req, res) => {
 
 
 
+
+
 // Obtener pedidos de un usuario por su ID
-exports.obtenerPedidosPorUsuario = async (req, res) => {
-  try {
-    const idUsuario = req.params.idUsuario;
-    const pedidos = await Pedido.find({ comprador: idUsuario, activo: true }); // Agregar filtro para los pedidos activos
-    res.status(200).json(pedidos);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Hubo un error al obtener los pedidos del usuario' });
-  }
-};
+// exports.obtenerPedidosPorUsuario = async (req, res) => {
+//   try {
+//     const idUsuario = req.params.idUsuario;
+//     const pedidos = await Pedido.find({ comprador: idUsuario, activo: true }); // Agregar filtro para los pedidos activos
+//     res.status(200).json(pedidos);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ mensaje: 'Hubo un error al obtener los pedidos del usuario' });
+//   }
+// };
 
 
 
