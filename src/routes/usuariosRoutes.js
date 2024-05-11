@@ -7,7 +7,6 @@ const autenticarUsuario = require('../middleware/autenticacion');
 
 // Rutas para usuarios
 router.post('/', usuariosController.crearUsuario);
-//router.get('/',autenticarUsuario, usuariosController.obtenerUsuarios);
 router.get('/:id',autenticarUsuario, usuariosController.obtenerUsuarioPorId);
 router.put('/:id',autenticarUsuario, usuariosController.actualizarUsuario);
 router.delete('/:id',autenticarUsuario, usuariosController.desactivarUsuario);
